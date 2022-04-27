@@ -1,6 +1,16 @@
+#define _CRT_SECURE_NO_WARNINGS
+#define _CRTDBG_MAP_ALLOC
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <crtdbg.h> 
+
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ ,__LINE__)
+#define new DBG_NEW
+#endif
+#endif 
 
 // 结构体：能够将多个相同或不同数据类型一同储存的数据类型
 
@@ -9,6 +19,8 @@ struct people
 {
 	char name[128];
 	int age;
+	// void text();结构体中不允许定义函数
+	// int heigh = 10; c语言结构体不允许赋初值
 };
 /*
   struct代表这是一个结构体 people是这个结构的名字
@@ -31,7 +43,7 @@ struct
 {
 char name[128];
 int age;
-}XiaoJingTing, ChenPengWei; //定义这个类型的结构体变量XiaoJingTing和ChenPengWei此方法只能在这定义
+}XiaoJingTing, ChenPengWei; //匿名的结构体变量，定义这个类型的结构体变量XiaoJingTing和ChenPengWei此方法只能在这定义
 
 */
 /*
@@ -42,7 +54,7 @@ int age;
 
 void text(struct people yangYang);
 void text2(struct people *yangYang);
-void setSwordman(struct people *swordsman);
+void setSwordman(struct people *swordsman, int count);
 
 int main(void)
 {
@@ -103,9 +115,9 @@ int main(void)
 		firstGenerationKuiBa.skill);
 
 	printf("第二代魁拔叫%s，他已经%d岁了，他的技能是%s。\n",
-		firstGenerationKuiBa.basicInfo.name,
-		firstGenerationKuiBa.basicInfo.age,
-		firstGenerationKuiBa.skill);
+		secondGenerationKuiBa.basicInfo.name,
+		secondGenerationKuiBa.basicInfo.age,
+		secondGenerationKuiBa.skill);
 
 	//结构体与指针
 
@@ -126,6 +138,11 @@ int main(void)
 	p->basicInfo.age = 20;
 	strcpy(p->skill, "未知");
 	printf("%s是超人，他今年%d岁，他的技能是：%s\n", p->basicInfo.name, p->basicInfo.age, p->skill);
+	if (p != NULL)
+	{
+		free(p);
+		p = NULL;
+	}
 
 	// 结构体中套指针
 	struct skills
@@ -156,8 +173,91 @@ int main(void)
 		Wei->age,
 		Wei->skill->skillName,
 		Wei->skill->skillDescribe);
+	if (Wei->name != NULL)
+	{
+		free(Wei->name);
+		Wei->name = NULL;
+	}
+	if (Wei->skill->skillDescribe != NULL)//由里层向外层释放，不然会造成内存泄露
+	{
+		free(Wei->skill->skillDescribe);
+		Wei->skill->skillDescribe = NULL;
+	}
+	if (Wei->skill->skillName != NULL)
+	{
+		free(Wei->skill->skillName);
+		Wei->skill->skillName = NULL;
+	}
+	if (Wei->skill != NULL)
+	{
+		free(Wei->skill);
+		Wei->skill = NULL;
+	}
+	if (Wei != NULL)
+	{
+		free(Wei);
+		Wei = NULL;
+	}
 
+	// 结构体中套指针注意的问题
+	struct apple
+	{
+		char *describe;
+		int price;
+	};
+	
+	struct apple apple1;
+	struct apple apple2;
+	apple1.describe = (char *)malloc(128);
+	apple2.describe = (char *)malloc(128);
+	strcpy(apple1.describe, "是一个酸苹果。");
+	strcpy(apple2.describe, "是一个甜苹果。");
+	apple1.price = 5;
+	apple2.price = 10;
+	printf("我%s，我的价格是%d元。\n", apple1.describe, apple1.price);
+	printf("我%s，我的价格是%d元。\n", apple2.describe, apple2.price);
+	/*
+	apple1 = apple2;// 此处是浅拷贝，是将内存中的内容按字节拷贝过去
+	printf("我%s，我的价格是%d元。\n", apple1.describe, apple1.price);
+	printf("我%s，我的价格是%d元。\n", apple2.describe, apple2.price);
 
+	if (apple1.describe != NULL)
+	{
+		free(apple1.describe);
+		apple1.describe = NULL;
+	}
+	if (apple2.describe != NULL)
+	{
+		free(apple2.describe);
+		apple2.describe = NULL;
+	}
+	错误，内存重复释放 且内存泄露
+	因为上面进行的是浅拷贝将apple2空间中的内容按字节拷贝到apple1
+	所以apple1中的apple1.describe和apple2中的apple2.describe指向的是同一块堆上的空间
+	所以apple2.describe最开始指向的空间被第二次释放了 而apple1.describe最开始指向的空间没被释放，内存泄漏
+	*/
+	// 改正方法：将apple1.describe最开始指向的空间释放后手动拷贝
+	if (apple1.describe != NULL)
+	{
+		free(apple1.describe);
+		apple1.describe = NULL;
+	}
+	apple1.describe = (char *)malloc(128);
+	strcpy(apple1.describe, apple2.describe);
+	apple1.price = apple2.price;
+	printf("我%s，我的价格是%d元。\n", apple1.describe, apple1.price);
+	printf("我%s，我的价格是%d元。\n", apple2.describe, apple2.price);
+	if (apple1.describe != NULL)
+	{
+		free(apple1.describe);
+		apple1.describe = NULL;
+	}
+
+	if (apple2.describe != NULL)
+	{
+		free(apple2.describe);
+		apple2.describe = NULL;
+	}
 	//结构体做函数参数
 
 	// 普通结构体变量做函数参数
@@ -172,22 +272,26 @@ int main(void)
 
 	//结构体数组名做函数参数
 	struct people swordsman[3] = { 0 };
-	setSwordman(swordsman, sizeof(swordsman) / sizeof(swordsman[0]));
+	setSwordman(swordsman, (sizeof(swordsman) / sizeof(swordsman[0])));
 	for (int i = 0; i < sizeof(swordsman) / sizeof(swordsman[0]); i++)
 	{
 		printf("在下%s,今年%d岁。\n", swordsman[i].name, swordsman[i].age);
 	}
+	_CrtDumpMemoryLeaks();
+	system("pause");
 	return 0;
 }
 
 void text(struct people yangYang)
 {
 	yangYang.age = 18;
+	return;
 }
 
 void text2(struct people *yangYang)
 {
 	yangYang->age = 18;
+	return;
 }
 
 //void setSwordman(struct people swordsman[])
@@ -201,4 +305,5 @@ void setSwordman(struct people *swordsman, int count)
 		strcpy((swordsman + i)->name, tep);
 		(swordsman + i)->age = i + 17;
 	}
+	return;
 }

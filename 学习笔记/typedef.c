@@ -14,12 +14,13 @@ typedef struct person
 	int age;
 }PEOPLE;// 给结构体取别名
 
-int main(void)
+int main_typedef(void)
 {
 	INT a = 10;
 	CHAR b = 20;
 	printf("a的大小为：%d个字节。b的大小为：%d个字节。\n", sizeof(a), sizeof(b));
 	PEOPLE people = { "gugu", 18 };
 	printf("%s的年龄是：%d\n", people.name, people.age);
-
+	system("pause");
+	return 0;
 }
