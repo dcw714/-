@@ -17,6 +17,7 @@ union num
 };// 定义和访问方式与结构体类似
 
 int main_union(void)
+// int main(void)
 {
 	union num tmp;
 	//1、所有成员的首地址是一样的

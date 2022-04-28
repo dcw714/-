@@ -56,7 +56,8 @@ void text(struct people yangYang);
 void text2(struct people *yangYang);
 void setSwordman(struct people *swordsman, int count);
 
-int main(void)
+int main_struct(void)
+// int main(void)
 {
 	// 结构体变量的定义
 	struct people ChenPengWei;
@@ -76,6 +77,7 @@ int main(void)
 	// (&ChenPengWei)->name = "ChenPengWei"; err:数组名是一个常量
 	strcpy((&ChenPengWei)->name, "陈彭炜");
 	printf("%s的年龄是：%d。\n", ChenPengWei.name, (&ChenPengWei)->age);
+	// 输出：陈彭炜的年龄是：22。
 
 
 	// 结构体数组：是一个数组，数组中的每一个元素都是一个结构体
@@ -89,6 +91,11 @@ int main(void)
 	{
 		printf("大家好，我是练习时长%d年的偶像练习生%s，我今年%d岁。\n", i + 1, peoples[i].name, peoples[i].age);
 	}
+/*
+输出：大家好，我是练习时长1年的偶像练习生吴海飞，我今年22岁。
+大家好，我是练习时长2年的偶像练习生唐春海，我今年23岁。
+大家好，我是练习时长3年的偶像练习生王俊，我今年24岁。
+*/
 
 
 	//结构体嵌套结构体
@@ -102,22 +109,25 @@ int main(void)
 	struct superman yuHong;
 	strcpy(yuHong.basicInfo.name, "余鸿");
 	yuHong.basicInfo.age = 22;
-	strcpy(yuHong.skill, "初级耐力（一口气跑2000公里）。");
+	strcpy(yuHong.skill, "初级耐力（一口气跑2000公里）");
 	printf("超人%s今年%d岁，他的技能是：%s。\n", yuHong.basicInfo.name, yuHong.basicInfo.age, yuHong.skill);
+	// 输出：超人余鸿今年22岁，他的技能是：初级耐力（一口气跑2000公里）。
 
 
 	//结构体赋值
-	struct superman firstGenerationKuiBa = { "anonymous", 10000, "对世界有毁灭之能力，难以战胜。其灵魂不死不灭，肉身死后仍会复活。" };
+	struct superman firstGenerationKuiBa = { "anonymous", 10000, "对世界有毁灭之能力，难以战胜。其灵魂不死不灭，肉身死后仍会复活" };
 	struct superman secondGenerationKuiBa = firstGenerationKuiBa; //同种类型的变量可以直接赋值，内部是memcpy实现
 	printf("第一代魁拔叫%s，他已经%d岁了，他的技能是%s。\n",
 		firstGenerationKuiBa.basicInfo.name, 
 		firstGenerationKuiBa.basicInfo.age,
 		firstGenerationKuiBa.skill);
+	// 输出：第一代魁拔叫anonymous，他已经10000岁了，他的技能是对世界有毁灭之能力，难以战胜。其灵魂不死不灭，肉身死后仍会复活。。
 
 	printf("第二代魁拔叫%s，他已经%d岁了，他的技能是%s。\n",
 		secondGenerationKuiBa.basicInfo.name,
 		secondGenerationKuiBa.basicInfo.age,
 		secondGenerationKuiBa.skill);
+	// 输出第一代魁拔叫anonymous，他已经10000岁了，他的技能是对世界有毁灭之能力，难以战胜。其灵魂不死不灭，肉身死后仍会复活。。
 
 	//结构体与指针
 
@@ -128,9 +138,10 @@ int main(void)
 
 	// 指向普通变量的结构体指针
 	struct superman *p;
-	// printf("%s是第六代魁拔，他今年%d岁，他的技能是：%s", p->basicInfo.name, p->basicInfo.age, p->skill); p是一个野指针
+	// printf("%s是第六代魁拔，他今年%d岁，他的技能是：%s。", p->basicInfo.name, p->basicInfo.age, p->skill); p是一个野指针
 	p = &manJi;
 	printf("%s是第六代魁拔，他今年%d岁，他的技能是：%s\n", p->basicInfo.name, p->basicInfo.age, p->skill);
+	// 输出：蛮吉是第六代魁拔，他今年12岁，他的技能是：对世界有毁灭之能力，难以战胜。其灵魂不死不灭，肉身死后仍会复活。
 
 	// 指向堆区的结构体指针
 	p = (struct superman *)malloc(sizeof(struct superman));
@@ -138,6 +149,8 @@ int main(void)
 	p->basicInfo.age = 20;
 	strcpy(p->skill, "未知");
 	printf("%s是超人，他今年%d岁，他的技能是：%s\n", p->basicInfo.name, p->basicInfo.age, p->skill);
+	// 输出：史蒂夫是超人，他今年20岁，他的技能是：未知
+
 	if (p != NULL)
 	{
 		free(p);
@@ -173,6 +186,7 @@ int main(void)
 		Wei->age,
 		Wei->skill->skillName,
 		Wei->skill->skillDescribe);
+	// 输出：在这，创世神邓昌炜能够主宰一切。他今年18岁，他的技能是零: 超越一切，无所不能。
 	if (Wei->name != NULL)
 	{
 		free(Wei->name);
@@ -216,6 +230,8 @@ int main(void)
 	apple2.price = 10;
 	printf("我%s，我的价格是%d元。\n", apple1.describe, apple1.price);
 	printf("我%s，我的价格是%d元。\n", apple2.describe, apple2.price);
+	// 输出：我是一个酸苹果。，我的价格是5元。
+    //       我是一个甜苹果。，我的价格是10元。
 	/*
 	apple1 = apple2;// 此处是浅拷贝，是将内存中的内容按字节拷贝过去
 	printf("我%s，我的价格是%d元。\n", apple1.describe, apple1.price);
@@ -242,11 +258,15 @@ int main(void)
 		free(apple1.describe);
 		apple1.describe = NULL;
 	}
-	apple1.describe = (char *)malloc(128);
+	// apple1.describe = (char *)malloc(strlen(apple2.describe));
+	apple1.describe = (char *)malloc(strlen(apple2.describe) + 1);
 	strcpy(apple1.describe, apple2.describe);
 	apple1.price = apple2.price;
 	printf("我%s，我的价格是%d元。\n", apple1.describe, apple1.price);
 	printf("我%s，我的价格是%d元。\n", apple2.describe, apple2.price);
+	// 输出：我是一个甜苹果。，我的价格是10元。
+	//       我是一个甜苹果。，我的价格是10元。
+
 	if (apple1.describe != NULL)
 	{
 		free(apple1.describe);
@@ -265,10 +285,12 @@ int main(void)
 	printf("%s的年龄是：%d。", yangYang.name, (&yangYang)->age);
 	text(yangYang);// 无法更改，因为这只是值传递。
 	printf("%s的年龄是：%d。\n", yangYang.name, (&yangYang)->age);
+	// 输出：杨洋的年龄是：22。杨洋的年龄是：22。
 
 	//结构体指针变量做函数参数
 	text2(&yangYang);
 	printf("%s的年龄是：%d。\n", yangYang.name, (&yangYang)->age);
+	// 输出：杨洋的年龄是：18。
 
 	//结构体数组名做函数参数
 	struct people swordsman[3] = { 0 };
@@ -277,6 +299,10 @@ int main(void)
 	{
 		printf("在下%s,今年%d岁。\n", swordsman[i].name, swordsman[i].age);
 	}
+	//输出：
+	//在下校园第1贱客。, 今年17岁。
+	//在下校园第2贱客。, 今年18岁。
+	//在下校园第3贱客。, 今年19岁。
 	_CrtDumpMemoryLeaks();
 	system("pause");
 	return 0;

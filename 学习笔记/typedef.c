@@ -15,6 +15,7 @@ typedef struct person
 }PEOPLE;// 给结构体取别名
 
 int main_typedef(void)
+// int main(void)
 {
 	INT a = 10;
 	CHAR b = 20;

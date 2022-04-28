@@ -14,8 +14,10 @@ typedef enum BOOL
 }bool;
 
 int main_enum(void)
+// int main(void)
 {
 	bool a;
 	a = false;
 	printf("false: %d, true: %d a: %d", false, true, a);
+	return 0;
 }
